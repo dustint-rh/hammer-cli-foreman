@@ -160,7 +160,7 @@ module HammerCLIForeman
     end
 
     def param_to_resource(param_name)
-      HammerCLIForeman.param_to_resource(api_param.name)
+      HammerCLIForeman.param_to_resource(param_name)
     end
 
     def request_params
