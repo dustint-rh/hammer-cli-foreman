@@ -160,13 +160,13 @@ module HammerCLIForeman
     end
 
     def param_to_resource(param_name)
-      nil
+      HammerCLIForeman.param_to_resource(api_param.name)
     end
 
     def request_params
       params = super
       IdParamsFilter.new.for_action(resource.action(action), :only_required => false).each do |api_param|
-        param_resource = param_to_resource(api_param.name) || HammerCLIForeman.param_to_resource(api_param.name)
+        param_resource = param_to_resource(api_param.name)
         if param_resource
           resource_id = get_resource_id(param_resource, :scoped => true, :required => api_param.required?)
           params[api_param.name] = resource_id if resource_id
