@@ -1,5 +1,6 @@
 module HammerCLIForeman
 
+
   CONNECTION_NAME = 'foreman'
 
   def self.credentials
@@ -123,9 +124,13 @@ module HammerCLIForeman
       @identifier
     end
 
+    def get_scoped_options(resource)
+      resolver.scoped_options(resource.singular_name, all_options)
+    end
+
     def get_resource_id(resource, options={})
       if options[:scoped]
-        opts = resolver.scoped_options(resource.singular_name, all_options)
+        opts = get_scoped_options(resource)
       else
         opts = all_options
       end
@@ -154,10 +159,14 @@ module HammerCLIForeman
       HammerCLIForeman.record_to_common_format(super)
     end
 
+    def param_to_resource(param_name)
+      nil
+    end
+
     def request_params
       params = super
       IdParamsFilter.new.for_action(resource.action(action), :only_required => false).each do |api_param|
-        param_resource = HammerCLIForeman.param_to_resource(api_param.name)
+        param_resource = param_to_resource(api_param.name) || HammerCLIForeman.param_to_resource(api_param.name)
         if param_resource
           resource_id = get_resource_id(param_resource, :scoped => true, :required => api_param.required?)
           params[api_param.name] = resource_id if resource_id
